@@ -1,0 +1,67 @@
+#include <iostream>
+#include <string.h>
+using namespace std;
+
+//第i个字母开头，长度为len的字符串个数
+int sum(int i, int len) {
+	int total=0;
+	
+	if (len == 1) {
+		return 1;
+	}
+	else {
+		for (int j = i+1; j <= 26; j++) {
+			total += sum(j, len - 1);
+		}
+	}
+	return total;
+}
+
+int index(char *str) {
+	int s = 0;
+	int len = strlen(str);
+	for (int i = 1; i < len; i++) {
+		for (int j = 1; j <= 26; j++) {
+			s += sum(j,i);
+		}
+	}
+	//长度小于len的字符串总数
+
+	int start = str[0] - 'a' + 1;
+	for (int i = 1; i < start; i++) {
+		s += sum(i, len);
+	}
+	//长度为len，首字母序号小于本字符串首字母序号的字符串总数
+
+	for (int i = 1; i < len; i++) {
+		int now = str[i] - 'a' + 1;
+		int newlen = len - i;
+		for (int j = start + 1; j < now; j++) {
+			s += sum(j, newlen);
+		}
+		start = now;
+	}
+	//首字母为str[0],排在当前字符串之前的字符串总数
+	return s+1;
+}
+
+
+int main()
+{
+	int num;
+	
+	cin >> num;
+	char **chart=new char*[num];
+	
+	for (int i = 0; i < num; i++) {
+		chart[i] = new char[6];
+		cin >> chart[i];
+	}
+
+	for (int j = 0; j < num; j++) {
+		cout << index(chart[j]) << endl;
+	}
+
+	return 0;
+}
+
